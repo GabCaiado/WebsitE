@@ -1,24 +1,29 @@
 import '@styles/globals.css'
-import { children } from 'react'
 
 export const metadata = {
-    title: "WebsitE",
-    description: 'Buying Gift-Cards has never been this easier!'
+  title: "WebsitE",
+  description: 'Buying Gift-Cards has never been this easier!'
 }
 
-const RootLayout = ({children}) => {
+const RootLayout = ({ children }) => {
   return (
     <html lang='en'>
-        <body>
-            <div className='main'>
+      <head>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Michroma&display=swap');
+        </style>
+      </head>
+      <body>
+        <main className='app'>
+          <div className='navBar'>
+            <p className='navTitle'>WebsitE</p>
 
+            <div className='flex items-center gap-4'>
             </div>
-
-            <main className='app'>
-                {children}
-            </main>
-
-        </body>
+          </div>
+          {children}
+        </main>
+      </body>
     </html>
   )
 }

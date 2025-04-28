@@ -1,6 +1,8 @@
+//sharing of the UI components between routes
+
 import React from 'react'
 
-const layout = ({children}) => {
+export default function WishlistLayout({children}) {
   return (
     <html lang="en">
       <body>
@@ -9,5 +11,3 @@ const layout = ({children}) => {
     </html>
   )
 }
-
-export default layout

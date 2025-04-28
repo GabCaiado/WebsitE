@@ -1,11 +1,9 @@
 import React from 'react'
 
-const User = () => {
+export default function Wishlist() {
   return (
     <div>
-      PAGE USER
+      PAGE WISHLIST
     </div>
   )
 }
-
-export default User
