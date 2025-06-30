@@ -10,7 +10,12 @@ getProviders } from 'next-auth/react';
 import { LiaBookmark } from "react-icons/lia";
 import { SlBag } from "react-icons/sl";
 import { IoSearch } from "react-icons/io5";
+import { Exo } from 'next/font/google';
 
+const exo = Exo({
+  subsets: ['latin'],
+  weight: ['300', '400', '600', '700'],
+});
 
 const Nav = () => {
     const isUserLoggedIn = true;
@@ -20,7 +25,7 @@ const Nav = () => {
 
   return (
     <nav className="flex justify-between items-center w-full mb-8 bg-sky-200/20 px-4 p-4">
-        <Link href="/" className="pl-4 text-lime-400 font-bold text-2xl">
+        <Link href="/" className="pl-4 text-lime-400 font-bold text-2xl ml-10">
             WebsiteE
         </Link>
 
@@ -36,12 +41,14 @@ const Nav = () => {
                         <IoSearch className="text-2xl text-white ml-2" />
                     </div>
 
-                    <Link href="/wish-list" className='text-3xl'>
+                    <Link href="/wish-list" className='text-3xl mt-3 text-white'>
                         <LiaBookmark />
+                        <p className='text-[12px] -mt-2'>Saved</p>
                     </Link>
 
-                    <Link href="/wish-list" className='text-2xl'>
+                    <Link href="/cart" className='text-2xl mt-3 text-white'>
                         <SlBag />
+                        <p className='text-[12px]'>Cart</p>
                     </Link>
 
                     <div className="relative">
@@ -50,7 +57,7 @@ const Nav = () => {
                             className="rounded-full"
                         >
                             <Image
-                                src="/assets/images/avatar-default.svg"
+                                src="/images/profile.png"
                                 width={37}
                                 height={37}
                                 className="rounded-full"

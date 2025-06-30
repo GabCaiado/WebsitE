@@ -2,16 +2,11 @@ import '@styles/globals.css';
 
 import Nav from '@components/Nav';
 
-import { Poppins, Roboto } from 'next/font/google'
+import { Poppins, Exo } from 'next/font/google';
 
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '700'], // set multiple font weights
-})
-
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '700'],
 })
 
 export const metadata = {
