@@ -4,6 +4,10 @@
 
 
 :root {
-  --background: #1f2937;
+  --background: #000;
   --foreground: #171717;
 }
+
+/* .bg {
+  background-image: url('.images/');
+} */

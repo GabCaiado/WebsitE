@@ -23,6 +23,9 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "autoprefixer": "^10.4.21"
+    "@types/node": "24.0.10",
+    "@types/react": "19.1.8",
+    "autoprefixer": "^10.4.21",
+    "typescript": "5.8.3"
   }
 }
