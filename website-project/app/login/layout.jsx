@@ -7,7 +7,7 @@ const poppins = Poppins({
   weight: ['400', '700'],
 });
 
-const RootLayout = ({ children }) => {
+const LoginLayout = ({ children }) => {
   return (
     <html lang="en" className={`${poppins.className}`}>
       <body className="h-full bg-black text-gray-400">
@@ -17,4 +17,4 @@ const RootLayout = ({ children }) => {
   );
 };
 
-export default RootLayout;
+export default LoginLayout;

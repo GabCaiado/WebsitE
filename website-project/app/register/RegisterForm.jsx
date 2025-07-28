@@ -11,6 +11,12 @@ export default function RegisterForm() {
   return (
     <form action={formAction} className="flex max-w-[300px] flex-col gap-2">
       <div className="flex flex-col gap-2">
+        <input className="p-1 rounded-sm" name="username" placeholder="Username" />
+      </div>
+      {state?.errors?.username && (
+        <p className="text-red-500 text-sm">{state.errors.username}</p>
+      )}
+      <div className="flex flex-col gap-2">
         <input className="p-1 rounded-sm" name="email" placeholder="Email" />
       </div>
       {state?.errors?.email && (
@@ -20,7 +26,7 @@ export default function RegisterForm() {
         <input className="p-1 rounded-sm" name="password" type="password" placeholder="Password" />
       </div>
       {state?.errors?.password && (
-        <p className="text-red-500 text-sm">{state.errors.confirmPassword}</p>
+        <p className="text-red-500 text-sm">{state.errors.password}</p>
       )}
       <div className="flex flex-col gap-2">
         <input className="p-1 rounded-sm" name="confirmPassword" type="password" placeholder="Confirm Password" />

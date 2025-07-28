@@ -1,60 +1,76 @@
 "use client";
 
-import { useState, useEffect, useActionState } from "react";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { useFormStatus } from "react-dom";
 import { login } from "./actions";
 import { getProviders, signIn } from 'next-auth/react';
 
 export function LoginForm() {
-  const [state, loginAction] = useActionState(login, undefined); {/* initial state undefined for now */}
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const [providers, setProviders] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      const res = await getProviders();
-      setProviders(res);
-    })();
+    getProviders().then(setProviders);
   }, []);
 
+  async function handleCredentialsLogin(e) {
+    e.preventDefault();
+    setError(null);
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+    if (res.error) setError(res.error);
+    else window.location.href = "/";
+  }
+
   return (
-    <form action={loginAction} className="flex max-w-[300px] flex-col gap-2">
+    <form onSubmit={handleCredentialsLogin} className="flex max-w-[300px] flex-col gap-2">
       <div className="flex flex-col gap-2">
-        <input id="email" name="email" placeholder="Email" className="p-1 rounded-sm"/>
+        <input
+          required
+          id="email"
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="p-1 rounded-sm"
+        />
       </div>
-      {state?.errors?.email && (
-        <p className="text-red-500 text-sm">{state.errors.email}</p>
-      )}
+      {error && <p className="text-red-500 text-sm">{state.errors.password}</p>}
 
       <div className="flex flex-col gap-2">
         <input
+          required
           id="password"
           name="password"
           type="password"
+          onChange={e => setPassword(e.target.value)}
           placeholder="Password"
           className="p-1 rounded-sm"
         />
       </div>
-      {state?.errors?.password && (
-        <p className="text-red-500 text-sm">{state.errors.password}</p>
-      )}
+      {error && <p className="text-red-500 text-sm">{state.errors.password}</p>}
 
     <p className="text-sm text-center mt-3">
       Don't have an account?{" "}
       <Link href="/register" className="text-lime-400 hover:underline">Sign up</Link>
     </p>
 
-    {providers &&
-      Object.values(providers).map((provider) => (
+    {providers && providers.google && (
         <button
           type="button"
-          key={provider.name}
-          onClick={() => signIn(provider.id, { callbackUrl: '/' })}
+          onClick={() => signIn(providers.google.id, { callbackUrl: '/' })}
           className="rounded-full text-white text-sm px-4 py-2 border border-white hover:bg-white hover:text-black transition"
         >
-          Sign in with {provider.name}
+          Sign in with {providers.google.name}
         </button>
-      ))}
+      )}
 
       <SubmitButton />
     </form>

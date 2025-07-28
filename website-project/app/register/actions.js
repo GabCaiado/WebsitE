@@ -2,9 +2,13 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
+import { connectToDB } from "@/utils/database";
+import User from "@/models/user";
 
 const registerSchema = z
   .object({
+    username: z.string().nonempty("Username is required"),
     email: z.string().nonempty("Email is required").email("Invalid email"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().nonempty("Please confirm your password"),
@@ -23,6 +27,38 @@ export async function register(prevState, formData) {
     };
   }
 
-  // Lógica real de criação aqui
-  redirect("/login");
+  const { username, email, password } = parsed.data;
+
+  try {
+    await connectToDB();
+
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      return {
+        errors: {
+          email: ["Email already in use"],
+        },
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    redirect("/login");
+  } catch (error) {
+    if (error.message === "NEXT_REDIRECT") throw error;
+
+    console.error("REGISTER ERROR:", error);
+    return {
+      errors: {
+        email: ["An unexpected error occurred"],
+      },
+    };
+  }
 }
