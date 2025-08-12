@@ -3,7 +3,7 @@
 import { useFormStatus } from "react-dom";
 import { useActionState } from 'react';
 import Link from 'next/link';
-import { register } from './actions';
+import { register } from '../app/register/actions';
 
 export default function RegisterForm() {
   const [state, formAction] = useActionState(register, undefined);
@@ -15,6 +15,18 @@ export default function RegisterForm() {
       </div>
       {state?.errors?.username && (
         <p className="text-red-500 text-sm">{state.errors.username}</p>
+      )}
+      <div className="flex flex-col gap-2">
+        <input className="p-1 rounded-sm" name="name" placeholder="Name" />
+      </div>
+      {state?.errors?.name && (
+        <p className="text-red-500 text-sm">{state.errors.name}</p>
+      )}
+      <div className="flex flex-col gap-2">
+        <input className="p-1 rounded-sm" name="lastname" placeholder="Last Name" />
+      </div>
+      {state?.errors?.lastname && (
+        <p className="text-red-500 text-sm">{state.errors.lastname}</p>
       )}
       <div className="flex flex-col gap-2">
         <input className="p-1 rounded-sm" name="email" placeholder="Email" />

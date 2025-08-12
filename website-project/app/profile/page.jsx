@@ -1,40 +1,40 @@
-"use client";
+'use client';
 
-import { useState, useEffect, use } from 'react';
 import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Profile from '@/components/Profile';
 
-import Profile from '@components/Profile'
+const MyProfilePage = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [userData, setUserData] = useState(null);
 
-const ProfilePage  = () => {
-    const { data: session, status  } = useSession();
-    const router = useRouter();
-    const [userData, setUserData] = useState([]);
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/');
+    }
 
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push('/login')
+    const fetchUserData = async () => {
+      if (session?.user?.id) {
+        try {
+          const res = await fetch(`/api/users/${session?.user.id}`);
+          const data = await res.json();
+          setUserData(data);
+        } catch (err) {
+          console.error('Failed to fetch user data', err);
         }
-        if (session?.user?.email){
-            const fetchUserData = async () => {
-                try {
-                    const res = await fetch(`/api/users/${session.user.email}`);
-                    const result = await res.json();
-                    setUserData(result.data);
-                } catch (err) {
-                    console.log('Failed to fetch profile data', err);
-                }
-            };
-            fetchUserData();
-        }
-    }, [session, status, router]);
+      }
+    };
 
-  return (
-    <Profile
-        name="My"
-        data={[userData]}
-    />
-  )
-}
+    fetchUserData();
+  }, [session, status]);
 
-export default ProfilePage
+  if (status === 'loading' || !userData) {
+    return <p className="text-center mt-10">Loading profile...</p>;
+  }
+
+  return <Profile sessionUser={userData} />;
+};
+
+export default MyProfilePage;

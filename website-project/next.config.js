@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ["mongoose"], // Atualizado
+  serverExternalPackages: ["mongoose"],
 
   images: {
-    domains: ['lh3.googleusercontent.com'],
+    domains: [
+      "lh3.googleusercontent.com",
+      "res.cloudinary.com"
+    ],
+    
   },
 
   webpack(config) {

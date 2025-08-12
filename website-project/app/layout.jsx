@@ -2,6 +2,7 @@ import '@styles/globals.css';
 
 import Nav from '@components/Nav';
 import Providers from './providers';
+import { CartProvider } from '@/context/CartContext';
 
 import { Poppins } from 'next/font/google';
 
@@ -19,10 +20,12 @@ const RootLayout = ({ children }) => {
   return (
     <html lang="en" className={`${poppins.className}`}>
       <body className="h-full bg-black text-gray-400">
-        <Providers>
-          <Nav />
-          <main className="app">{children}</main>
-        </Providers>
+        <CartProvider>
+          <Providers>
+            <Nav />
+            <main className="app">{children}</main>
+          </Providers>
+        </CartProvider>
       </body>
     </html>
   );

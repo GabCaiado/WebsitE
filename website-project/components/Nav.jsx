@@ -12,7 +12,6 @@ const Nav = () => {
   const { data: session } = useSession();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [providers, setProviders] = useState(null);
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/login' });
@@ -22,7 +21,7 @@ const Nav = () => {
   useEffect(() => {
     async function fetchProviders() {
       const response = await getProviders();
-      setProviders(response);
+      fetchProviders(response);
   }
   fetchProviders();
   }, []);
@@ -43,7 +42,7 @@ const Nav = () => {
       </Link>
 
       {/* Search */}
-      <div className="flex items-center bg-gray-500 rounded-md px-5 lg:ml-[720px] sm:ml-10 md:ml-10 mt-3 p-1 focus-within:ring-2 focus-within:ring-lime-400">
+      <div className="flex items-center bg-gray-500 rounded-md px-5 lg:ml-[800px] sm:ml-10 md:ml-10 mt-3 p-1 focus-within:ring-2 focus-within:ring-lime-400">
         <input
           className="bg-gray-500 rounded-md p-1 ml-1 text-white outline-none focus:ring-0"
           type="text"
@@ -51,16 +50,6 @@ const Nav = () => {
         />
         <IoSearch className="text-2xl text-white ml-2" />
       </div>
-
-      {/* Saved */}
-      {session?.user && (
-        <div className="sm:flex hidden gap-4 md:gap-5 items-center ml-auto mr-5 mt-6">
-          <Link href="/wish-list" className="text-3xl text-white text-center flex flex-col items-center">
-            <LiaBookmark />
-            <p className="text-[12px] -mt-2">Saved</p>
-          </Link>
-        </div>
-      )}
 
       {/* Cart */}
       <div className="flex items-center gap-6 mt-2">
@@ -71,16 +60,18 @@ const Nav = () => {
       </div>
 
       {/* Profile / Login */}
-      <div className="sm:flex hidden gap-4 md:gap-5 items-center ml-6 mr-6">
+      <div className="sm:flex hidden gap-4 md:gap-5 items-center lg:ml-6 mr-6">
         {session?.user ? (
-          <div className="relative">
-            <button onClick={toggleDropdown} className="rounded-full">
+          <div className="relative mt-3">
+            <button 
+              onClick={toggleDropdown} 
+              className="w-14 h-14 rounded-full overflow-hidden relative"
+            >
               <Image
-                src="/images/profile.png"
-                width={48}
-                height={48}
-                className="rounded-full mt-3"
+                src={session?.user?.avatar || "/images/profile.png"}
                 alt="profile"
+                fill
+                className="object-cover rounded-full"
               />
             </button>
 
@@ -90,7 +81,7 @@ const Nav = () => {
                   <li className="px-4 py-2 hover:bg-gray-400 hover:text-amber-50">
                     <Link href="/profile">Profile</Link>
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-400 hover:text-amber-50">
+                  <li className="px-4 py-2  hover:bg-gray-400 hover:text-amber-50">
                     <button
                       type="button"
                       onClick={handleLogout}

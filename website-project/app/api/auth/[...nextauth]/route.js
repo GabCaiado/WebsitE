@@ -1,22 +1,23 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from '@models/user';
 import bcrypt from "bcryptjs";
-import { connectToDB } from '@utils/database';
+import User from "@models/user";
+import { connectToDB } from "@utils/database";
 
 const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      profile(profile) {
+      async profile(profile) {
         return {
           id: profile.sub,
           name: profile.name,
           email: profile.email,
+          avatar: profile.picture || "",
         };
-      }
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -30,35 +31,64 @@ const handler = NextAuth({
         const user = await User.findOne({ email: credentials.email });
         if (!user) throw new Error("No user found");
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
         if (!isPasswordValid) throw new Error("Invalid email or password");
 
         return {
           id: user._id.toString(),
-          name: user.username,
+          name: user.name,
           email: user.email,
+          avatar: user.avatar || "",
         };
       },
     }),
   ],
+
   callbacks: {
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
+    async signIn({ user, account }) {
+      await connectToDB();
+
+      let dbUser = await User.findOne({ email: user.email });
+
+      if (!dbUser) {
+        dbUser = await User.create({
+          name: user.name || "",
+          email: user.email,
+          avatar: user.avatar || "",
+          password: account.provider === "credentials" ? user.password : undefined,
+          provider: account.provider,
+          googleId: account.provider === "google" ? user.id : undefined,
+        });
       }
-      return session;
+
+      user.id = dbUser._id.toString();
+      return true;
     },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.avatar = user.avatar;
       }
       return token;
     },
+
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.avatar = token.avatar;
+      }
+      return session;
+    },
   },
+
   session: {
     strategy: "jwt",
   },

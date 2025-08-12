@@ -9,6 +9,8 @@ import User from "@/models/user";
 const registerSchema = z
   .object({
     username: z.string().nonempty("Username is required"),
+    name: z.string().nonempty("Name is required"),
+    lastname: z.string().nonempty("Last Name is required"),
     email: z.string().nonempty("Email is required").email("Invalid email"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().nonempty("Please confirm your password"),
@@ -27,7 +29,7 @@ export async function register(prevState, formData) {
     };
   }
 
-  const { username, email, password } = parsed.data;
+  const { username, name, lastname, email, password } = parsed.data;
 
   try {
     await connectToDB();
@@ -46,6 +48,8 @@ export async function register(prevState, formData) {
 
     await User.create({
       username,
+      name,
+      lastname,
       email,
       password: hashedPassword,
     });

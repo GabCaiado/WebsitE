@@ -19,6 +19,15 @@ const Feed = () => {
     ? giftCards
     : giftCards.filter(card => card.category === filter);
 
+  const cards = [
+            { id: "minecraft", href: "/buy/minecraft", src: "/images/minecraft.webp", alt: "minecraft" },
+            { id: "valorant", href: "/buy/valorant", src: "/images/valorant.webp", alt: "valorant" },
+            { id: "genshin", href: "/buy/genshin", src: "/images/genshin.jpg", alt: "genshin" },
+            { id: "roblox", href: "/buy/roblox", src: "/images/roblox.webp", alt: "roblox" },
+            { id: "leagueoflegends", href: "/buy/leagueoflegends", src: "/images/league.webp", alt: "leagueoflegends" },
+            { id: "freefire", href: "/buy/freefire", src: "/images/freefire.webp", alt: "freefire" },
+          ];
+
   return (
     <>
       {/* Mobile */}
@@ -36,23 +45,19 @@ const Feed = () => {
           </div>
 
           <div className="grid grid-cols-3 lg:grid-cols-3 gap-x-48 gap-y-2 w-full py-8 pl-36">
-            {[
-              { href: "/minecraft", src: "/images/minecraft.webp", alt: "minecraft" },
-              { href: "/valorant", src: "/images/valorant.webp", alt: "valorant" },
-              { href: "/genshin", src: "/images/genshin.jpg", alt: "genshin" },
-              { href: "/roblox", src: "/images/roblox.webp", alt: "roblox" },
-              { href: "/leagueoflegends", src: "/images/league.webp", alt: "leagueoflegends" },
-              { href: "/freefire", src: "/images/freefire.webp", alt: "freefire" },
-            ].map((item, index) => (
-              <div key={index} className="overflow-hidden w-[180px]">
-                <Link href={item.href} className="block w-full h-full">
-                  <Image
-                    src={item.src}
-                    width={1200}
-                    height={200}
-                    className="rounded-lg w-[600px] h-[200px] object-cover"
-                    alt={item.alt}
-                  />
+            {cards.map((item) => (
+              <div key={item.id} className="relative w-[180px] h-[200px] overflow-hidden rounded-lg">
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                <Link
+                  href={`/buy/${item.id}`}
+                  className="absolute inset-0 z-10"
+                >
                 </Link>
               </div>
             ))}
@@ -95,23 +100,24 @@ const Feed = () => {
         {/* Gift-Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 ms-10 me-10">
           {filteredCards.map(card => (
-            <div key={card.id} className="bg-gray-700 rounded-lg overflow-hidden text-white flex flex-col">
-
-              <div className="w-full h-40">
-                <img
-                  src={card.image}
-                  alt={card.name}
-                  className="w-full h-full object-cover"
-                />
+            <Link key={card.id} href={`/buy/${card.id}`}>
+              <div className="bg-gray-700 rounded-lg overflow-hidden text-white flex flex-col hover:scale-105 transition-transform cursor-pointer">
+                <div className="w-full h-40">
+                  <Image
+                    src={card.image}
+                    alt={card.name}
+                    width={600}
+                    height={160}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-2">
+                  <h3 className="text-lg font-semibold">{card.name}</h3>
+                  <p className="text-sm text-gray-300">{card.category}</p>
+                  <p className="text-lime-400 font-bold">${card.price}</p>
+                </div>
               </div>
-
-              <div className="p-2">
-                <h3 className="text-lg font-semibold">{card.name}</h3>
-                <p className="text-sm text-gray-300">{card.category}</p>
-                <p className="text-lime-400 font-bold">${card.price}</p>
-              </div>
-
-            </div>
+            </Link>
           ))}
         </div>
 
