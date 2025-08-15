@@ -5,6 +5,9 @@ import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export default function GiftCardDetails({ card }) {
   const [quantity, setQuantity] = useState(1);
@@ -23,9 +26,27 @@ export default function GiftCardDetails({ card }) {
     }, 2000); // 2s
   };
 
-  const handleBuyNow = () => {
-    addToCart({...card, price: selectedPrice, quantity});
-    router.push("/checkout");
+  const makePayment = async () => {
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ products: [
+        {
+          name: card.name,
+          price: selectedPrice,
+          quantity: quantity,
+        }
+      ] }),
+    });
+
+    const { url, error } = await res.json();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    window.location.href = url;
   };
 
   useEffect(() => {
@@ -98,7 +119,7 @@ export default function GiftCardDetails({ card }) {
             Add to Cart
           </button>
           <button
-            onClick={handleBuyNow}
+            onClick={makePayment}
             className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition"
           >
             Buy Now

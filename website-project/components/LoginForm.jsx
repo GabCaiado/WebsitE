@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { useFormStatus } from "react-dom";
-import { login } from "./actions";
+import { login } from "../app/login/actions";
 import { getProviders, signIn } from 'next-auth/react';
 
 export function LoginForm() {
@@ -57,20 +57,20 @@ export function LoginForm() {
       </div>
       {error && <p className="text-red-500 text-sm">{state.errors.password}</p>}
 
-    <p className="text-sm text-center mt-3">
-      Don't have an account?{" "}
-      <Link href="/register" className="text-lime-400 hover:underline">Sign up</Link>
-    </p>
-
     {providers && providers.google && (
         <button
           type="button"
           onClick={() => signIn(providers.google.id, { callbackUrl: '/' })}
-          className="rounded-full text-white text-sm px-4 py-2 border border-white hover:bg-white hover:text-black transition"
+          className="rounded-full text-white text-sm mt-4 px-4 py-2 border border-white hover:bg-white hover:text-black transition"
         >
           Sign in with {providers.google.name}
         </button>
       )}
+
+    <p className="text-sm text-center mt-3">
+      Don't have an account?{" "}
+      <Link href="/register" className="text-lime-400 hover:underline">Sign up</Link>
+    </p>
 
       <SubmitButton />
     </form>

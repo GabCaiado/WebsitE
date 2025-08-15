@@ -18,6 +18,35 @@ const Nav = () => {
     setDropdownOpen(false);
   };
 
+  const [query, setQuery] = useState("");
+
+  const giftCards = [
+            { name: "minecraft", url: "/buy/minecraft" },
+            { name: "valorant", url: "/buy/valorant" },
+            { name: "genshin", url: "/buy/genshin" },
+            { name: "roblox", url: "/buy/roblox" },
+            { name: "league of legends", url: "/buy/leagueoflegends" },
+            { name: "freefire", url: "/buy/freefire" },
+            { name: "minecraft", url: "/buy/minecraft" },
+            { name: "amazon", url: "/buy/amazon" },
+            { name: "xbox", url: "/buy/xbox" },
+            { name: "netflix", url: "/buy/netflix" },
+            { name: "googleplay", url: "/buy/googleplay" },
+            { name: "playstation", url: "/buy/playstation" },
+          ];
+
+  const handleSearch = () => {
+    const match = giftCards.find(card =>
+      card.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (match) {
+      window.location.href = match.url;
+    } else {
+      alert("Gift card not found!")
+    }
+  };
+
   useEffect(() => {
     async function fetchProviders() {
       const response = await getProviders();
@@ -47,8 +76,16 @@ const Nav = () => {
           className="bg-gray-500 rounded-md p-1 ml-1 text-white outline-none focus:ring-0"
           type="text"
           placeholder="Search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
         />
         <IoSearch className="text-2xl text-white ml-2" />
+
       </div>
 
       {/* Cart */}
