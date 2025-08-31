@@ -71,7 +71,10 @@ const Nav = () => {
       </Link>
 
       {/* Search */}
-      <div className="flex items-center bg-gray-500 rounded-md px-5 lg:ml-[800px] sm:ml-10 md:ml-10 mt-3 p-1 focus-within:ring-2 focus-within:ring-lime-400">
+      <div className="flex items-center bg-gray-500 rounded-md px-5 mt-3 p-1 focus-within:ring-2 focus-within:ring-lime-400 
+        sm:ml-5 
+        md:ml-10 
+        lg:ml-auto">
         <input
           className="bg-gray-500 rounded-md p-1 ml-1 text-white outline-none focus:ring-0"
           type="text"
@@ -97,7 +100,7 @@ const Nav = () => {
       </div>
 
       {/* Profile / Login */}
-      <div className="sm:flex hidden gap-4 md:gap-5 items-center lg:ml-6 mr-6">
+      <div className="sm:flex hidden gap-4 md:gap-5 items-center md:ml-6 mr-6">
         {session?.user ? (
           <div className="relative mt-3">
             <button 

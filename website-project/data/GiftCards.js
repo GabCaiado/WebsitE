@@ -76,4 +76,11 @@ export const giftCards = [
     price: 10,
     image: "/images/playstation.webp",
   },
+  {
+    id: "mobilelegends",
+    name: "Mobile Legends",
+    category: "Gaming",
+    price: 5,
+    image: "/images/mobilelegends.webp",
+  },
 ];

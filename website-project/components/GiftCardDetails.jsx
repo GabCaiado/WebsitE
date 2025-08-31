@@ -5,48 +5,86 @@ import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export default function GiftCardDetails({ card }) {
   const [quantity, setQuantity] = useState(1);
   const [selectedPrice, setSelectedPrice] = useState(card.price);
   const [showPopup, setShowPopup] = useState(false);
-  const { addToCart } = useCart();
+  const { cartItems, addToCart, removeFromCart } = useCart();
   const { data: session, status } = useSession();
   const router = useRouter();
 
   const handleAddToCart = () => {
-    addToCart({ ...card, price: selectedPrice, quantity });;
+    addToCart({ ...card, price: selectedPrice, quantity });
     setShowPopup(true);
-
     setTimeout(() => {
       setShowPopup(false);
     }, 2000); // 2s
   };
 
   const makePayment = async () => {
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ products: [
-        {
-          name: card.name,
-          price: selectedPrice,
-          quantity: quantity,
-        }
-      ] }),
-    });
-
-    const { url, error } = await res.json();
-
-    if (error) {
-      console.error(error);
+    if (!session?.user?.id || !session?.user?.email) {
+      console.error("User not logged in or missing user data", {
+        id: session?.user?.id,
+        email: session?.user?.email,
+      });
       return;
     }
 
-    window.location.href = url;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const product = {
+      name: card.name,
+      price: selectedPrice,
+      quantity: quantity,
+      image: card.image && card.image.startsWith('http')
+        ? card.image
+        : `${baseUrl}${card.image.startsWith('/') ? '' : '/'}${card.image}`,
+    };
+
+    console.log("Product data:", product);
+    try {
+      new URL(product.image);
+    } catch {
+      console.error("Malformed image URL:", product.image);
+      return;
+    }
+
+    console.log("Sending to /api/checkout:", {
+      products: [product],
+      userId: session.user.id,
+      email: session.user.email,
+    });
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          products: [product],
+          userId: session.user.id,
+          email: session.user.email,
+        }),
+      });
+
+      const text = await res.text();
+      console.log("Raw response from /api/checkout:", text);
+
+      if (!res.ok) {
+        console.error("Checkout API returned an error", res.status, text);
+        return;
+      }
+
+      const { url, error } = JSON.parse(text);
+      if (error) {
+        console.error("Checkout API error:", error);
+        return;
+      }
+
+      console.log("Redirecting to:", url);
+      window.location.href = url;
+    } catch (err) {
+      console.error("Failed to create checkout session:", err);
+    }
   };
 
   useEffect(() => {
@@ -79,11 +117,11 @@ export default function GiftCardDetails({ card }) {
                 key={value}
                 onClick={() => setSelectedPrice(value)}
                 className={`px-4 py-2 rounded text-sm ${
-                selectedPrice === value
-                  ? "bg-lime-500 text-white"
-                  : "bg-gray-200 hover:bg-lime-400 hover:text-black"
-              }`}
-            >
+                  selectedPrice === value
+                    ? "bg-lime-500 text-white"
+                    : "bg-gray-200 hover:bg-lime-400 hover:text-black"
+                }`}
+              >
                 $ {value}
               </button>
             ))}

@@ -64,6 +64,19 @@ const handler = NextAuth({
         });
       }
 
+      if (!dbUser.stripeCustomerId) {
+        const Stripe = require("stripe");
+        const stripe = new Stripe(process.env.STRIPE_SECRET);
+
+        const customer = await stripe.customers.create({
+          email: dbUser.email,
+          name: dbUser.name,
+        });
+
+        dbUser.stripeCustomerId = customer.id;
+        await dbUser.save();
+      }
+
       user.id = dbUser._id.toString();
       return true;
     },

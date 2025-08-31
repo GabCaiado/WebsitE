@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { connectToDB } from "@/utils/database";
 import User from "@/models/user";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET);
 
 const registerSchema = z
   .object({
@@ -37,22 +40,26 @@ export async function register(prevState, formData) {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return {
-        errors: {
-          email: ["Email already in use"],
-        },
-      };
+      return { errors: { email: ["Email already in use"] } };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const user = await User.create({
       username,
       name,
       lastname,
       email,
       password: hashedPassword,
     });
+
+    const customer = await stripe.customers.create({
+      email: user.email,
+      name: `${user.name} ${user.lastname}`,
+    });
+
+    user.stripeCustomerId = customer.id;
+    await user.save();
 
     redirect("/login");
   } catch (error) {

@@ -26,6 +26,8 @@ const Feed = () => {
             { id: "roblox", href: "/buy/roblox", src: "/images/roblox.webp", alt: "roblox" },
             { id: "leagueoflegends", href: "/buy/leagueoflegends", src: "/images/league.webp", alt: "leagueoflegends" },
             { id: "freefire", href: "/buy/freefire", src: "/images/freefire.webp", alt: "freefire" },
+            { id: "playstation", href: "/buy/playstation", src: "/images/playstation.webp", alt: "playstation" },
+            { id: "mobilelegends", href: "/buy/mobilelegends", src: "/images/mobile_legends.webp", alt: "mobilelegends" },
           ];
 
   return (
@@ -38,13 +40,13 @@ const Feed = () => {
       </section>
 
       {/* Desktop */}
-      <section className="bg-gray-800/40 hidden outline outline-2 sm:flex gap-4 md:gap-5 ml-auto z-10 py-10 px-6 rounded-2xl lg:max-w-[1300px] mx-auto max-h-[500px] overflow-hidden">
+      <section className="bg-gray-800/40 hidden outline outline-2 sm:flex gap-4 md:gap-5 ml-auto z-10 py-10 px-6 rounded-2xl lg:max-w-[1000px] xl:max-w-[1300px] 2xl:max-w-[1700px]   mx-auto max-h-[500px] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 py-2 pb-2 -mt-8">
           <div className="col-span-1 bg-gray-600/50 p-4 rounded-md w-full max-h-[460px] lg:max-w-[1000px] lg:ml-16">
             <Slideshow />
           </div>
 
-          <div className="grid grid-cols-3 lg:grid-cols-3 gap-x-48 gap-y-2 w-full py-8 pl-36">
+          <div className="grid grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-x-48 gap-y-2 w-full py-8 pl-36">
             {cards.map((item) => (
               <div key={item.id} className="relative w-[180px] h-[200px] overflow-hidden rounded-lg">
                 <Image
@@ -62,13 +64,14 @@ const Feed = () => {
               </div>
             ))}
           </div>
-
+          
+          {/* Best Sellers */}
           <div className="hidden lg:flex relative min-h-[470px] items-center mt-8">
-            <div className="relative flex justify-center items-center h-[250px]">
+            <div className="relative flex justify-center items-center h-[250px] ">
               {/* Line above */}
-              <div className="absolute top-[-120px] left-[310px] -translate-x-1/2 w-[1px] h-[130px] bg-lime-500" />
+              <div className="absolute 2xl:top-[-120px] top-[-202px] left-[310px] 2xl:left-[410px] -translate-x-1/2 w-[1px] h-[130px] bg-lime-500" />
 
-              <div className={`${exo.className} absolute top-[67px] left-[310px] -translate-x-1/2 rotate-90 text-[16px] tracking-widest font-normal`}>
+              <div className={`${exo.className} absolute 2xl:top-[67px] -top-3 left-[310px] 2xl:left-[410px] -translate-x-1/2 rotate-90 text-[16px] tracking-widest font-normal`}>
                 <div className="whitespace-nowrap">
                   <span className="text-gray-300">BEST </span>
                   <span className="text-lime-400">SELLERS</span>
@@ -76,7 +79,7 @@ const Feed = () => {
               </div>
 
               {/* Line below */}
-              <div className="absolute top-[150px] left-[310px] -translate-x-1/2 w-[1px] h-[130px] bg-lime-500" />
+              <div className="absolute 2xl:top-[150px] top-[72px] left-[310px] 2xl:left-[410px] -translate-x-1/2 w-[1px] h-[130px] bg-lime-500" />
             </div>
           </div>
         </div>
